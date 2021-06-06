@@ -1,75 +1,39 @@
-import * as PIXI from "pixi.js";
-import "./style.css";
+import Chart from "chart.js/auto";
 
-declare const VERSION: string;
-
-const gameWidth = 800;
-const gameHeight = 600;
-
-console.log(`Welcome from pixi-typescript-boilerplate ${VERSION}`);
-
-const app = new PIXI.Application({
-    backgroundColor: 0xd3d3d3,
-    width: gameWidth,
-    height: gameHeight,
+const ctx = document.getElementById("playersActiveChart");
+const myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: ["GIN 3", "GIN 11", "GIN 15", "GIN 17", "GIN 20"],
+        datasets: [
+            {
+                label: "Active players",
+                data: [0, 4, 1, 1, 15, 9],
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)",
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)",
+                ],
+                borderWidth: 1,
+            },
+        ],
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+            },
+        },
+    },
 });
-
-const stage = app.stage;
-
-window.onload = async (): Promise<void> => {
-    await loadGameAssets();
-
-    document.body.appendChild(app.view);
-
-    resizeCanvas();
-
-    const birdFromSprite = getBird();
-    birdFromSprite.anchor.set(0.5, 0.5);
-    birdFromSprite.position.set(gameWidth / 2, gameHeight / 2);
-
-    stage.addChild(birdFromSprite);
-};
-
-async function loadGameAssets(): Promise<void> {
-    return new Promise((res, rej) => {
-        const loader = PIXI.Loader.shared;
-        loader.add("rabbit", "./assets/simpleSpriteSheet.json");
-
-        loader.onComplete.once(() => {
-            res();
-        });
-
-        loader.onError.once(() => {
-            rej();
-        });
-
-        loader.load();
-    });
-}
-
-function resizeCanvas(): void {
-    const resize = () => {
-        app.renderer.resize(window.innerWidth, window.innerHeight);
-        app.stage.scale.x = window.innerWidth / gameWidth;
-        app.stage.scale.y = window.innerHeight / gameHeight;
-    };
-
-    resize();
-
-    window.addEventListener("resize", resize);
-}
-
-function getBird(): PIXI.AnimatedSprite {
-    const bird = new PIXI.AnimatedSprite([
-        PIXI.Texture.from("birdUp.png"),
-        PIXI.Texture.from("birdMiddle.png"),
-        PIXI.Texture.from("birdDown.png"),
-    ]);
-
-    bird.loop = true;
-    bird.animationSpeed = 0.1;
-    bird.play();
-    bird.scale.set(3);
-
-    return bird;
-}

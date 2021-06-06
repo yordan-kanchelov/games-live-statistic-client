@@ -4,7 +4,6 @@ const path = require("path");
 
 const fs = require("fs");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
@@ -52,15 +51,6 @@ module.exports = (env) => {
         plugins: [
             new MiniCssExtractPlugin({
                 filename: "[name].[contenthash].css",
-            }),
-
-            new OptimizeCssAssetsPlugin({
-                assetNameRegExp: /\.css$/i,
-                cssProcessor: require("cssnano"),
-                cssProcessorPluginOptions: {
-                    preset: ["default", { discardComments: { removeAll: true } }],
-                },
-                canPrint: true,
             }),
 
             new webpack.DefinePlugin({
